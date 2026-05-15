@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>KevinsPokeCenter — The Global Command Center for Pokémon Collectors</title>
+  <title>KevinsPokeCenter — Global Pokémon Collector Marketplace</title>
   <style>
     :root {
       --bg: #050713;
@@ -20,15 +20,15 @@
       --pink: #ff5c9a;
       --green: #4dffb1;
       --red: #ff6b6b;
+      --orange: #ff9f43;
       --shadow: 0 32px 120px rgba(0, 0, 0, 0.45);
       --radius: 30px;
-      --max: 1220px;
+      --max: 1440px;
       font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
 
     * { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-
     body {
       margin: 0;
       min-height: 100vh;
@@ -40,7 +40,6 @@
         linear-gradient(135deg, var(--bg), var(--bg-2) 56%, #080511);
       overflow-x: hidden;
     }
-
     body::before {
       content: "";
       position: fixed;
@@ -53,635 +52,451 @@
       background-size: 58px 58px;
       mask-image: linear-gradient(to bottom, rgba(0,0,0,0.85), transparent 78%);
     }
-
-    .glow {
-      position: fixed;
-      width: 430px;
-      height: 430px;
-      border-radius: 999px;
-      opacity: 0.18;
-      filter: blur(24px);
-      pointer-events: none;
-      z-index: 0;
-    }
+    a { color: inherit; }
+    .glow { position: fixed; width: 430px; height: 430px; border-radius: 999px; opacity: 0.18; filter: blur(24px); pointer-events: none; z-index: 0; }
     .glow.one { top: -150px; right: -120px; background: var(--blue); }
     .glow.two { left: -160px; bottom: -170px; background: var(--purple); }
     .glow.three { right: 10%; bottom: 20%; background: var(--gold); opacity: 0.08; }
 
-    .shell {
-      width: min(var(--max), calc(100% - 38px));
-      margin: 0 auto;
-      position: relative;
-      z-index: 1;
-    }
-
-    nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 24px;
-      padding: 26px 0;
-    }
-
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      font-size: 1.14rem;
-      font-weight: 950;
-      letter-spacing: -0.045em;
-    }
-
-    .brand-mark {
-      width: 46px;
-      height: 46px;
-      border-radius: 17px;
-      display: grid;
-      place-items: center;
-      background: conic-gradient(from 180deg, var(--gold), var(--blue), var(--purple), var(--pink), var(--gold));
-      box-shadow: 0 0 44px rgba(255, 215, 106, 0.25);
-    }
-    .brand-mark::after {
-      content: "K";
-      width: 31px;
-      height: 31px;
-      border-radius: 11px;
-      background: rgba(5, 7, 19, 0.84);
-      display: grid;
-      place-items: center;
-      font-weight: 950;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      padding: 7px;
-      border-radius: 999px;
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,0.06);
-      backdrop-filter: blur(18px);
-    }
-    .nav-links a {
-      color: var(--muted);
-      text-decoration: none;
-      padding: 10px 15px;
-      border-radius: 999px;
-      font-size: 0.9rem;
-      font-weight: 800;
-      transition: 0.2s ease;
-    }
+    .shell { width: min(var(--max), calc(100% - 38px)); margin: 0 auto; position: relative; z-index: 1; }
+    nav { position: sticky; top: 0; z-index: 20; display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 18px 0; backdrop-filter: blur(18px); }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 1.14rem; font-weight: 950; letter-spacing: -0.045em; }
+    .brand-mark { width: 46px; height: 46px; border-radius: 17px; display: grid; place-items: center; background: conic-gradient(from 180deg, var(--gold), var(--blue), var(--purple), var(--pink), var(--gold)); box-shadow: 0 0 44px rgba(255, 215, 106, 0.25); }
+    .brand-mark::after { content: "K"; width: 31px; height: 31px; border-radius: 11px; background: rgba(5, 7, 19, 0.84); display: grid; place-items: center; font-weight: 950; }
+    .nav-links { display: flex; gap: 8px; align-items: center; padding: 7px; border-radius: 999px; border: 1px solid var(--line); background: rgba(255,255,255,0.06); backdrop-filter: blur(18px); }
+    .nav-links a { color: var(--muted); text-decoration: none; padding: 10px 15px; border-radius: 999px; font-size: 0.9rem; font-weight: 800; transition: 0.2s ease; }
     .nav-links a:hover, .nav-links a.primary { background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: #07101d; }
 
-    .hero {
-      min-height: calc(100vh - 100px);
-      display: grid;
-      grid-template-columns: 1.03fr 0.97fr;
-      gap: 34px;
-      align-items: center;
-      padding: 22px 0 72px;
-    }
-
-    .eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 22px;
-      padding: 10px 14px;
-      border-radius: 999px;
-      color: var(--gold);
-      border: 1px solid rgba(255, 215, 106, 0.28);
-      background: rgba(255, 215, 106, 0.08);
-      font-size: 0.78rem;
-      font-weight: 950;
-      text-transform: uppercase;
-      letter-spacing: 0.13em;
-    }
-    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 8px rgba(77,255,177,0.12); }
-
+    .hero { min-height: 760px; display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 34px; align-items: center; padding: 42px 0 60px; }
+    .eyebrow { display: inline-flex; align-items: center; gap: 10px; margin-bottom: 22px; padding: 10px 14px; border-radius: 999px; color: var(--gold); border: 1px solid rgba(255, 215, 106, 0.28); background: rgba(255, 215, 106, 0.08); font-size: 0.78rem; font-weight: 950; text-transform: uppercase; letter-spacing: 0.13em; }
+    .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 8px rgba(77,255,177,0.12); animation: pulse 1.8s infinite; }
+    @keyframes pulse { 50% { box-shadow: 0 0 0 14px rgba(77,255,177,0.02); } }
     h1, h2, h3, h4, p { margin-top: 0; }
-    h1 {
-      margin: 0;
-      max-width: 960px;
-      font-size: clamp(3.6rem, 8vw, 8.2rem);
-      line-height: 0.85;
-      letter-spacing: -0.095em;
-    }
-    .gradient-text {
-      background: linear-gradient(135deg, #fff 0%, var(--gold) 30%, var(--blue) 70%, #fff 100%);
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      text-shadow: 0 0 60px rgba(74, 223, 255, 0.22);
-    }
-    .hero-copy {
-      color: var(--muted);
-      font-size: clamp(1.04rem, 1.6vw, 1.32rem);
-      line-height: 1.75;
-      max-width: 680px;
-      margin: 30px 0 0;
-    }
-
-    .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 34px; }
-    .button {
-      border: 0;
-      cursor: pointer;
-      text-decoration: none;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 56px;
-      padding: 0 22px;
-      border-radius: 18px;
-      background: linear-gradient(135deg, var(--gold), var(--gold-2));
-      color: #07101d;
-      font-weight: 950;
-      box-shadow: 0 18px 52px rgba(255, 215, 106, 0.24);
-      transition: 0.22s ease;
-    }
+    h1 { margin: 0; max-width: 900px; font-size: clamp(3.4rem, 7.5vw, 8.6rem); line-height: 0.84; letter-spacing: -0.095em; }
+    .gradient-text { background: linear-gradient(135deg, #fff 0%, var(--gold) 30%, var(--blue) 70%, #fff 100%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 60px rgba(74, 223, 255, 0.22); }
+    .hero-copy { color: var(--muted); font-size: clamp(1.04rem, 1.35vw, 1.28rem); line-height: 1.75; max-width: 710px; margin: 28px 0 0; }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 28px; }
+    .button { border: 0; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 9px; min-height: 54px; padding: 0 22px; border-radius: 18px; background: linear-gradient(135deg, var(--gold), var(--gold-2)); color: #07101d; font-weight: 950; box-shadow: 0 18px 52px rgba(255, 215, 106, 0.24); transition: 0.22s ease; font: inherit; }
     .button:hover { transform: translateY(-3px); box-shadow: 0 26px 62px rgba(255,215,106,0.32); }
     .button.secondary { background: rgba(255,255,255,0.08); color: var(--ink); border: 1px solid var(--line); box-shadow: none; backdrop-filter: blur(18px); }
-    .button.small { min-height: 42px; padding: 0 14px; border-radius: 14px; font-size: 0.86rem; }
+    .button.small { min-height: 38px; padding: 0 13px; border-radius: 13px; font-size: 0.82rem; }
 
-    .hero-card {
-      min-height: 650px;
-      position: relative;
-      isolation: isolate;
-      overflow: hidden;
-      padding: 18px;
-      border-radius: 42px;
-      background: linear-gradient(145deg, rgba(255,255,255,0.22), rgba(255,255,255,0.045));
-      border: 1px solid rgba(255,255,255,0.16);
-      box-shadow: var(--shadow);
-    }
-    .hero-card::before {
-      content: "";
-      position: absolute;
-      inset: -42%;
-      z-index: -2;
-      background: conic-gradient(from 120deg, transparent, rgba(255,215,106,0.18), transparent, rgba(74,223,255,0.18), transparent);
-      animation: spin 10s linear infinite;
-    }
-    .hero-card::after {
-      content: "";
-      position: absolute;
-      inset: 1px;
-      z-index: -1;
-      border-radius: 41px;
-      background: linear-gradient(180deg, rgba(5,7,19,0.12), rgba(5,7,19,0.94));
-    }
+    .hero-dashboard { position: relative; min-height: 690px; padding: 18px; border-radius: 42px; background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(255,255,255,0.045)); border: 1px solid rgba(255,255,255,0.16); box-shadow: var(--shadow); overflow: hidden; isolation: isolate; }
+    .hero-dashboard::before { content: ""; position: absolute; inset: -42%; z-index: -2; background: conic-gradient(from 120deg, transparent, rgba(255,215,106,0.16), transparent, rgba(74,223,255,0.18), transparent); animation: spin 11s linear infinite; }
+    .hero-dashboard::after { content: ""; position: absolute; inset: 1px; z-index: -1; border-radius: 41px; background: linear-gradient(180deg, rgba(5,7,19,0.18), rgba(5,7,19,0.92)); }
     @keyframes spin { to { transform: rotate(360deg); } }
+    .dashboard-inner { height: 100%; border-radius: 31px; padding: 20px; background: rgba(7, 11, 28, 0.58); border: 1px solid rgba(255,255,255,0.12); overflow: hidden; }
+    .dash-top { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .dash-title strong { display:block; font-size: 1.35rem; letter-spacing: -0.04em; }
+    .dash-title span { color: var(--muted); font-size: 0.88rem; }
+    .live-pill, .chip { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; border-radius: 999px; padding: 9px 12px; background: rgba(77,255,177,0.1); border: 1px solid rgba(77,255,177,0.22); color: var(--green); font-size: 0.82rem; font-weight: 950; }
+    .ticker { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 14px 0; }
+    .ticker-card { padding: 14px; min-height: 94px; border-radius: 20px; background: rgba(255,255,255,0.075); border: 1px solid rgba(255,255,255,0.11); }
+    .ticker-card b { display: block; font-size: 1.55rem; letter-spacing: -0.06em; }
+    .ticker-card span { display: block; color: var(--muted); margin-top: 6px; font-size: 0.78rem; font-weight: 800; }
+    .hero-market-grid { display: grid; grid-template-columns: 1fr 0.78fr; gap: 14px; margin-top: 14px; }
+    .hero-grail { min-height: 360px; position: relative; overflow: hidden; border-radius: 28px; padding: 22px; background: radial-gradient(circle at 30% 10%, rgba(255,255,255,0.24), transparent 28%), linear-gradient(135deg, rgba(255,215,106,0.24), rgba(255,92,154,0.16), rgba(74,223,255,0.12)); border: 1px solid rgba(255,255,255,0.14); }
+    .hero-grail .emoji { font-size: 6.5rem; margin: 16px 0 8px; filter: drop-shadow(0 20px 32px rgba(0,0,0,0.34)); }
+    .hero-grail h3 { font-size: 2rem; line-height: 1.02; letter-spacing: -0.06em; margin-bottom: 8px; }
+    .hero-grail p, .mini-card p { color: var(--muted); line-height: 1.55; }
+    .price-row { display: flex; justify-content: space-between; align-items: end; gap: 12px; margin-top: 20px; }
+    .price-row b { color: var(--gold); font-size: 1.7rem; letter-spacing: -0.05em; }
+    .side-stack { display: grid; gap: 12px; }
+    .mini-card { border-radius: 24px; padding: 18px; background: rgba(255,255,255,0.075); border: 1px solid rgba(255,255,255,0.1); }
+    .avatar-strip { display:flex; align-items:center; margin: 12px 0 0 10px; }
+    .avatar { width: 44px; height: 44px; margin-left: -10px; border-radius: 16px; display:grid; place-items:center; background: linear-gradient(135deg, rgba(255,215,106,0.3), rgba(74,223,255,0.16)); border: 1px solid rgba(255,255,255,0.2); box-shadow: 0 12px 34px rgba(0,0,0,0.26); }
+    .avatar.online::after { content:""; width: 9px; height: 9px; border-radius: 50%; background: var(--green); border: 2px solid #07101d; position: absolute; }
 
-    .portrait-wrap { height: 100%; min-height: 612px; border-radius: 31px; overflow: hidden; position: relative; background: #111827; }
-    .portrait-wrap img { width: 100%; height: 100%; min-height: 612px; object-fit: cover; object-position: center; transform: scale(1.03); filter: saturate(1.18) contrast(1.08); }
-    .portrait-wrap::after { content: ""; position: absolute; inset: 0; background: radial-gradient(circle at 50% 32%, transparent 0 26%, rgba(5,7,19,0.16) 43%, rgba(5,7,19,0.72) 100%), linear-gradient(to top, rgba(5,7,19,0.98), transparent 58%); }
-    .floating-badge { position: absolute; left: 30px; right: 30px; bottom: 30px; z-index: 2; padding: 22px; border-radius: 26px; background: rgba(5,7,19,0.72); border: 1px solid rgba(255,255,255,0.16); backdrop-filter: blur(22px); }
-    .badge-title { display: flex; justify-content: space-between; gap: 14px; align-items: start; margin-bottom: 10px; }
-    .badge-title strong { font-size: 1.3rem; letter-spacing: -0.045em; }
-    .badge-title span { color: var(--gold); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.13em; font-weight: 950; }
-    .floating-badge p { color: var(--muted); line-height: 1.55; margin: 0; }
+    .stat-band { display: grid; grid-template-columns: repeat(5, 1fr); gap: 14px; margin: -8px 0 54px; }
+    .stat { padding: 22px; border-radius: var(--radius); background: var(--soft); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(18px); }
+    .stat b { display: block; font-size: clamp(1.6rem, 2.6vw, 2.8rem); letter-spacing: -0.08em; line-height: 1; }
+    .stat span { color: var(--muted); display: block; margin-top: 10px; font-weight: 800; font-size: 0.9rem; }
 
-    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin: -10px 0 82px; }
-    .stat { padding: 26px; border-radius: var(--radius); background: var(--soft); border: 1px solid rgba(255,255,255,0.12); backdrop-filter: blur(18px); }
-    .stat b { display: block; font-size: clamp(2rem, 3.4vw, 3.25rem); letter-spacing: -0.08em; line-height: 1; }
-    .stat span { color: var(--muted); display: block; margin-top: 12px; font-weight: 800; }
-
-    section { padding: 78px 0; }
-    .section-head { max-width: 850px; margin-bottom: 34px; }
+    section { padding: 74px 0; }
+    .section-head { max-width: 940px; margin-bottom: 32px; }
     .section-kicker { color: var(--blue); font-weight: 950; letter-spacing: 0.14em; text-transform: uppercase; font-size: 0.78rem; margin-bottom: 12px; }
-    h2 { margin: 0; font-size: clamp(2.5rem, 5vw, 5.3rem); line-height: 0.94; letter-spacing: -0.08em; }
-    .section-head p { color: var(--muted); font-size: 1.15rem; line-height: 1.75; margin: 20px 0 0; }
-
-    .panel { padding: 32px; border-radius: 34px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.13); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
+    h2 { margin: 0; font-size: clamp(2.5rem, 4.6vw, 5.3rem); line-height: 0.94; letter-spacing: -0.08em; }
+    .section-head p { color: var(--muted); font-size: 1.12rem; line-height: 1.75; margin: 20px 0 0; }
+    .panel { padding: 26px; border-radius: 34px; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.13); box-shadow: var(--shadow); backdrop-filter: blur(18px); }
     .panel p { color: var(--muted); line-height: 1.72; }
 
-    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-    .feature-card { position: relative; min-height: 274px; overflow: hidden; padding: 30px; border-radius: var(--radius); background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.055)); border: 1px solid rgba(255,255,255,0.14); transition: 0.24s ease; }
-    .feature-card:hover { transform: translateY(-8px); border-color: rgba(255,215,106,0.42); }
-    .feature-card::before { content: ""; position: absolute; width: 160px; height: 160px; right: -55px; top: -55px; border-radius: 999px; background: radial-gradient(circle, rgba(255,215,106,0.25), transparent 65%); }
-    .icon { width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; font-size: 1.45rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); margin-bottom: 44px; }
-    .feature-card h3 { margin-bottom: 12px; font-size: 1.38rem; letter-spacing: -0.045em; }
-    .feature-card p { color: var(--muted); line-height: 1.65; margin: 0; }
-
-    .command-center { display: grid; grid-template-columns: 0.9fr 1.1fr; gap: 20px; align-items: start; }
-    .app-tabs { display: grid; gap: 12px; }
-    .tab-btn { width: 100%; padding: 18px; border: 1px solid rgba(255,255,255,0.12); border-radius: 22px; background: rgba(255,255,255,0.065); color: var(--ink); text-align: left; cursor: pointer; transition: 0.2s ease; }
-    .tab-btn strong { display: block; font-size: 1.05rem; letter-spacing: -0.03em; }
-    .tab-btn span { display: block; color: var(--muted); margin-top: 6px; line-height: 1.45; }
-    .tab-btn.active { background: linear-gradient(135deg, rgba(255,215,106,0.22), rgba(74,223,255,0.11)); border-color: rgba(255,215,106,0.42); transform: translateX(6px); }
-    .demo-screen { min-height: 612px; position: relative; overflow: hidden; }
-    .screen-top { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 18px; }
-    .screen-title h3 { margin: 0; font-size: 1.6rem; letter-spacing: -0.05em; }
-    .screen-title p { margin: 6px 0 0; color: var(--muted); }
-    .chip { display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; border-radius: 999px; padding: 9px 12px; background: rgba(77,255,177,0.1); border: 1px solid rgba(77,255,177,0.22); color: var(--green); font-size: 0.82rem; font-weight: 950; }
-
-    .market-toolbar { display: grid; grid-template-columns: 1fr auto; gap: 12px; margin-bottom: 15px; }
-    input, select, textarea { width: 100%; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.075); color: var(--ink); border-radius: 16px; padding: 14px 15px; outline: none; font: inherit; }
+    .market-shell { display: grid; grid-template-columns: 280px 1fr 330px; gap: 18px; align-items: start; }
+    .filters { position: sticky; top: 90px; display:grid; gap: 12px; }
+    label { display:block; color: var(--muted); font-size: 0.75rem; font-weight: 950; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 7px; }
+    input, select, textarea { width: 100%; border: 1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.075); color: var(--ink); border-radius: 16px; padding: 13px 14px; outline: none; font: inherit; }
     input::placeholder, textarea::placeholder { color: rgba(255,255,255,0.45); }
     select option { color: #111827; }
+    .filter-grid { display:grid; gap: 11px; }
+    .range-row { display:grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .quick-tabs { display:flex; flex-wrap:wrap; gap: 8px; margin-top: 12px; }
+    .quick-tab { border:1px solid rgba(255,255,255,0.13); background:rgba(255,255,255,0.07); color: var(--muted); padding: 8px 10px; border-radius: 999px; font-weight: 850; cursor:pointer; transition: .2s ease; }
+    .quick-tab.active, .quick-tab:hover { color:#07101d; background:linear-gradient(135deg, var(--gold), var(--gold-2)); border-color:transparent; }
 
-    .card-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-    .collectible { padding: 16px; border-radius: 23px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.105); transition: 0.22s ease; }
-    .collectible:hover { transform: translateY(-4px); border-color: rgba(74,223,255,0.36); }
-    .card-art { height: 130px; border-radius: 18px; display: grid; place-items: center; font-size: 3rem; margin-bottom: 13px; background: radial-gradient(circle at 40% 20%, rgba(255,255,255,0.22), transparent 30%), linear-gradient(135deg, rgba(255,215,106,0.28), rgba(74,223,255,0.16)); }
-    .collectible h4 { margin: 0 0 8px; letter-spacing: -0.035em; }
-    .collectible p { margin: 0 0 12px; color: var(--muted); font-size: 0.92rem; line-height: 1.45; }
-    .card-meta { display: flex; justify-content: space-between; gap: 10px; align-items: center; color: var(--gold); font-weight: 950; }
-    .tag { color: var(--blue); background: rgba(74,223,255,0.1); border: 1px solid rgba(74,223,255,0.16); padding: 6px 9px; border-radius: 999px; font-size: 0.75rem; font-weight: 950; }
+    .market-main { display:grid; gap: 18px; }
+    .toolbar { display:grid; grid-template-columns: 1fr 170px 170px; gap: 10px; align-items:center; }
+    .featured { display:grid; grid-template-columns: 1.2fr 0.8fr; gap: 14px; }
+    .featured-main { position:relative; min-height: 330px; border-radius: 30px; overflow:hidden; padding: 24px; border:1px solid rgba(255,255,255,0.14); background: radial-gradient(circle at 25% 12%, rgba(255,255,255,0.22), transparent 30%), linear-gradient(135deg, rgba(255,215,106,0.22), rgba(163,107,255,0.17), rgba(74,223,255,0.12)); }
+    .featured-main .emoji { font-size: 7rem; }
+    .featured-main h3 { font-size: 2.15rem; letter-spacing:-.06em; margin-bottom: 6px; }
+    .featured-side { display:grid; gap: 12px; }
+    .grail-mini { display:grid; grid-template-columns: 76px 1fr; gap: 12px; align-items:center; padding: 14px; border-radius:22px; background:rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.1); cursor:pointer; transition:.2s ease; }
+    .grail-mini:hover { transform: translateY(-3px); border-color: rgba(255,215,106,.34); }
+    .grail-mini .art { height: 76px; border-radius: 18px; display:grid; place-items:center; font-size:2.35rem; background:linear-gradient(135deg, rgba(255,255,255,.14), rgba(74,223,255,.1)); }
+    .badge { display:inline-flex; align-items:center; gap:6px; color: var(--gold); background: rgba(255,215,106,.1); border:1px solid rgba(255,215,106,.22); padding:6px 9px; border-radius:999px; font-size:.72rem; font-weight:950; white-space: nowrap; }
+    .badge.blue { color: var(--blue); background: rgba(74,223,255,.09); border-color: rgba(74,223,255,.18); }
+    .badge.green { color: var(--green); background: rgba(77,255,177,.09); border-color: rgba(77,255,177,.18); }
+    .badge.pink { color: var(--pink); background: rgba(255,92,154,.09); border-color: rgba(255,92,154,.18); }
+    .badge.purple { color: #cbb2ff; background: rgba(163,107,255,.1); border-color: rgba(163,107,255,.18); }
 
-    .vault-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 16px; }
-    .vault-stat { border-radius: 20px; padding: 18px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); }
-    .vault-stat b { display: block; font-size: 1.65rem; letter-spacing: -0.06em; }
-    .vault-stat span { color: var(--muted); font-size: 0.86rem; font-weight: 800; }
-    .bar-chart { display: grid; gap: 12px; margin-top: 22px; }
-    .bar-row { display: grid; grid-template-columns: 90px 1fr 70px; gap: 10px; align-items: center; color: var(--muted); font-size: 0.86rem; }
+    .listing-grid { display:grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; }
+    .listing-card { position:relative; display:grid; gap: 12px; padding: 14px; border-radius: 26px; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.105); transition: .22s ease; overflow:hidden; }
+    .listing-card:hover { transform: translateY(-5px); border-color: rgba(74,223,255,0.36); box-shadow: 0 24px 54px rgba(0,0,0,.22); }
+    .listing-card::before { content:""; position:absolute; inset:-1px; background: radial-gradient(circle at 20% 0%, rgba(255,215,106,.12), transparent 32%); pointer-events:none; }
+    .card-art { position:relative; height: 155px; border-radius: 21px; display:grid; place-items:center; font-size: 4rem; background: radial-gradient(circle at 40% 20%, rgba(255,255,255,0.22), transparent 30%), linear-gradient(135deg, rgba(255,215,106,0.22), rgba(74,223,255,0.12)); overflow:hidden; }
+    .card-art::after { content:""; position:absolute; inset: auto 12px 12px 12px; height: 24px; border-radius:999px; background: rgba(0,0,0,.18); filter: blur(8px); }
+    .listing-head { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; position:relative; }
+    .listing-card h4 { margin:0; font-size: 1rem; letter-spacing:-.035em; line-height:1.18; }
+    .listing-card p { margin:0; color:var(--muted); font-size:.86rem; line-height:1.45; position:relative; }
+    .seller-row, .metric-row, .card-actions { display:flex; justify-content:space-between; align-items:center; gap: 8px; position:relative; }
+    .seller { display:flex; align-items:center; gap:8px; min-width:0; }
+    .seller .avatar { width:30px; height:30px; border-radius: 11px; margin:0; font-size: .95rem; }
+    .seller span { color:var(--muted); font-size:.78rem; font-weight:850; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .price { color:var(--gold); font-weight:950; font-size:1.18rem; letter-spacing:-.04em; }
+    .tiny { color:var(--muted); font-size:.76rem; font-weight:800; }
+    .watch, .bid-btn { border: 1px solid rgba(255,255,255,.12); background: rgba(255,255,255,.075); color: var(--ink); border-radius: 13px; padding: 9px 10px; font-weight: 900; cursor:pointer; transition:.2s ease; }
+    .watch:hover, .bid-btn:hover { border-color:rgba(255,215,106,.35); color:var(--gold); transform: translateY(-2px); }
+    .bid-btn { background: linear-gradient(135deg, rgba(255,215,106,.92), rgba(255,241,176,.92)); color:#07101d; border-color:transparent; }
+    .empty-state { padding:34px; text-align:center; color: var(--muted); border:1px dashed rgba(255,255,255,.18); border-radius:28px; }
+
+    .right-rail { display:grid; gap: 14px; position: sticky; top: 90px; }
+    .rail-list { display:grid; gap: 10px; }
+    .feed-item, .collector-row, .seller-card, .trade-row { display:grid; grid-template-columns: 42px 1fr auto; gap: 10px; align-items:center; padding: 12px; border-radius:20px; background: rgba(255,255,255,.065); border:1px solid rgba(255,255,255,.1); }
+    .feed-item .avatar, .collector-row .avatar, .seller-card .avatar, .trade-row .avatar { width:42px; height:42px; border-radius:15px; margin:0; position:relative; }
+    .feed-item b, .collector-row b, .seller-card b, .trade-row b { display:block; font-size:.9rem; letter-spacing:-.02em; }
+    .feed-item span, .collector-row span, .seller-card span, .trade-row span { display:block; color:var(--muted); font-size:.76rem; margin-top:3px; }
+    .feed-time { color: var(--blue); font-size:.72rem; font-weight:950; white-space:nowrap; }
+    .rail-title { display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom: 12px; }
+    .rail-title h3 { margin:0; font-size:1.2rem; letter-spacing:-.04em; }
+
+    .sections-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .feature-card { position: relative; min-height: 250px; overflow: hidden; padding: 26px; border-radius: var(--radius); background: linear-gradient(180deg, rgba(255,255,255,0.12), rgba(255,255,255,0.055)); border: 1px solid rgba(255,255,255,0.14); transition: 0.24s ease; }
+    .feature-card:hover { transform: translateY(-8px); border-color: rgba(255,215,106,0.42); }
+    .feature-card::before { content: ""; position: absolute; width: 160px; height: 160px; right: -55px; top: -55px; border-radius: 999px; background: radial-gradient(circle, rgba(255,215,106,0.25), transparent 65%); }
+    .icon { width: 54px; height: 54px; border-radius: 18px; display: grid; place-items: center; font-size: 1.45rem; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.12); margin-bottom: 38px; }
+    .feature-card h3 { margin-bottom: 12px; font-size: 1.25rem; letter-spacing: -0.045em; }
+    .feature-card p { color: var(--muted); line-height: 1.65; margin: 0; }
+
+    .market-pulse { display:grid; grid-template-columns: 1.1fr .9fr; gap:18px; }
+    .bar-chart { display: grid; gap: 12px; }
+    .bar-row { display: grid; grid-template-columns: 100px 1fr 72px; gap: 10px; align-items: center; color: var(--muted); font-size: 0.86rem; }
     .bar { height: 11px; border-radius: 999px; background: rgba(255,255,255,0.08); overflow: hidden; }
     .bar > span { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, var(--gold), var(--blue)); width: var(--w); }
+    .sold-grid { display:grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .sold-card { padding:15px; border-radius:22px; background:rgba(255,255,255,.065); border:1px solid rgba(255,255,255,.1); }
+    .sold-card .art { height:90px; display:grid; place-items:center; border-radius:17px; font-size:2.4rem; background:rgba(255,255,255,.07); margin-bottom:11px; }
+    .sold-card b { display:block; line-height:1.2; }
+    .sold-card span { display:block; color:var(--muted); font-size:.78rem; margin-top:5px; }
 
-    .trade-meter { margin-top: 20px; padding: 20px; border-radius: 24px; background: rgba(255,255,255,0.065); border: 1px solid rgba(255,255,255,0.1); }
-    .trade-values { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-    .trade-box { padding: 18px; border-radius: 20px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); }
-    .trade-box label { display: block; color: var(--muted); font-weight: 800; margin-bottom: 10px; }
-    .meter-track { height: 18px; margin: 20px 0 10px; background: rgba(255,255,255,0.1); border-radius: 999px; overflow: hidden; }
-    .meter-fill { height: 100%; width: 50%; border-radius: 999px; background: linear-gradient(90deg, var(--red), var(--gold), var(--green)); transition: width 0.25s ease; }
-    .fair-text { margin: 0; color: var(--muted); }
-    .fair-text strong { color: var(--gold); }
-
-    .auction-card { border-radius: 26px; overflow: hidden; background: rgba(255,255,255,0.065); border: 1px solid rgba(255,255,255,0.11); }
-    .auction-hero { min-height: 245px; display: grid; place-items: center; font-size: 5rem; background: radial-gradient(circle at 40% 20%, rgba(255,255,255,0.2), transparent 26%), linear-gradient(135deg, rgba(255,92,154,0.24), rgba(255,215,106,0.22), rgba(74,223,255,0.14)); }
-    .auction-body { padding: 22px; }
-    .auction-body h4 { font-size: 1.45rem; letter-spacing: -0.04em; margin-bottom: 7px; }
-    .auction-row { display: flex; justify-content: space-between; gap: 12px; margin-top: 16px; color: var(--muted); }
-    .auction-row b { color: var(--ink); font-size: 1.25rem; }
-
-    .ai-box { display: grid; gap: 12px; }
-    .chat-log { display: grid; gap: 12px; min-height: 310px; max-height: 360px; overflow: auto; padding-right: 4px; }
-    .bubble { width: fit-content; max-width: 85%; padding: 14px 16px; border-radius: 20px; line-height: 1.5; }
-    .bubble.user { margin-left: auto; background: linear-gradient(135deg, rgba(255,215,106,0.24), rgba(255,215,106,0.1)); border: 1px solid rgba(255,215,106,0.18); }
-    .bubble.bot { background: rgba(255,255,255,0.075); border: 1px solid rgba(255,255,255,0.11); color: var(--muted); }
-    .prompt-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; }
-
-    .founder { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; align-items: center; }
-    .quote { font-size: clamp(1.7rem, 3vw, 3.2rem); line-height: 1.05; letter-spacing: -0.065em; font-weight: 950; margin: 0; }
+    .founder { display:grid; grid-template-columns: 1fr 1fr; gap:18px; align-items:stretch; }
+    .quote { font-size: clamp(1.7rem, 3vw, 3.2rem); line-height: 1.05; letter-spacing: -0.065em; font-weight: 950; margin: 0; color:var(--ink); }
     .signature { margin-top: 26px; color: var(--muted); line-height: 1.75; font-size: 1.08rem; }
-    .timeline { display: grid; gap: 14px; }
-    .timeline-item { counter-increment: step; position: relative; padding: 24px 24px 24px 86px; min-height: 96px; border-radius: 24px; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.1); }
-    .timeline { counter-reset: step; }
-    .timeline-item::before { content: counter(step); position: absolute; left: 22px; top: 22px; width: 42px; height: 42px; border-radius: 15px; display: grid; place-items: center; background: linear-gradient(135deg, var(--blue), var(--purple)); font-weight: 950; }
-    .timeline-item h4 { margin: 0 0 6px; }
-    .timeline-item p { margin: 0; color: var(--muted); line-height: 1.55; }
-
     .final-cta { text-align: center; padding: 78px 30px; border-radius: 42px; background: radial-gradient(circle at 50% 0%, rgba(255,215,106,0.28), transparent 35%), linear-gradient(135deg, rgba(255,255,255,0.13), rgba(255,255,255,0.055)); border: 1px solid rgba(255,255,255,0.14); box-shadow: var(--shadow); }
-    .final-cta h2 { max-width: 860px; margin: 0 auto; }
-    .final-cta p { max-width: 710px; margin: 24px auto 0; color: var(--muted); line-height: 1.75; font-size: 1.1rem; }
+    .final-cta h2 { max-width: 900px; margin: 0 auto; }
+    .final-cta p { max-width: 760px; margin: 24px auto 0; color: var(--muted); line-height: 1.75; font-size: 1.1rem; }
     footer { text-align: center; color: rgba(255,255,255,0.48); padding: 42px 0 50px; font-size: 0.9rem; }
-
-    .toast { position: fixed; right: 20px; bottom: 20px; z-index: 99; padding: 16px 18px; border-radius: 18px; background: rgba(5,7,19,0.86); border: 1px solid rgba(255,255,255,0.16); box-shadow: var(--shadow); color: var(--ink); transform: translateY(120px); opacity: 0; transition: 0.25s ease; backdrop-filter: blur(18px); }
+    .toast { position: fixed; right: 20px; bottom: 20px; z-index: 99; max-width: 360px; padding: 16px 18px; border-radius: 18px; background: rgba(5,7,19,0.9); border: 1px solid rgba(255,255,255,0.16); box-shadow: var(--shadow); color: var(--ink); transform: translateY(120px); opacity: 0; transition: 0.25s ease; backdrop-filter: blur(18px); }
     .toast.show { transform: translateY(0); opacity: 1; }
 
-    @media (max-width: 1020px) {
-      .hero, .command-center, .founder { grid-template-columns: 1fr; }
-      .hero-card { min-height: 580px; }
-      .portrait-wrap, .portrait-wrap img { min-height: 545px; }
-      .stats, .feature-grid { grid-template-columns: repeat(2, 1fr); }
-      .nav-links { display: none; }
+    @media (max-width: 1220px) {
+      .hero, .market-shell, .market-pulse, .founder { grid-template-columns: 1fr; }
+      .filters, .right-rail { position: relative; top: auto; }
+      .listing-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .sections-grid { grid-template-columns: repeat(2, 1fr); }
+      .stat-band { grid-template-columns: repeat(3,1fr); }
     }
-    @media (max-width: 680px) {
+    @media (max-width: 820px) {
+      .nav-links { display:none; }
+      .hero { min-height:auto; padding-top: 24px; }
+      .hero-dashboard { min-height:auto; }
+      .ticker, .stat-band, .featured, .sold-grid, .sections-grid { grid-template-columns: 1fr; }
+      .hero-market-grid { grid-template-columns: 1fr; }
+      .toolbar { grid-template-columns: 1fr; }
+      .listing-grid { grid-template-columns: 1fr; }
+      h1 { font-size: 4.25rem; }
       .shell { width: min(100% - 24px, var(--max)); }
-      h1 { font-size: 4rem; }
-      .stats, .feature-grid, .card-grid, .vault-grid, .trade-values { grid-template-columns: 1fr; }
-      .market-toolbar, .prompt-row { grid-template-columns: 1fr; }
-      .panel { padding: 22px; }
-      .floating-badge { left: 18px; right: 18px; bottom: 18px; }
-      .bar-row { grid-template-columns: 70px 1fr 56px; }
     }
   </style>
 </head>
 <body>
-  <div class="glow one"></div>
-  <div class="glow two"></div>
-  <div class="glow three"></div>
-  <div class="toast" id="toast">Legendary action complete.</div>
+  <div class="glow one"></div><div class="glow two"></div><div class="glow three"></div>
+  <div class="toast" id="toast">Marketplace action complete.</div>
 
   <main class="shell">
     <nav>
       <div class="brand"><div class="brand-mark"></div><span>KevinsPokeCenter</span></div>
       <div class="nav-links" aria-label="Primary navigation">
-        <a href="#platform">Platform</a>
-        <a href="#market">Marketplace</a>
-        <a href="#founder">Founder</a>
-        <a class="primary" href="#join">Enter Center</a>
+        <a href="#marketplace">Marketplace</a><a href="#pulse">Market Pulse</a><a href="#holders">Holders</a><a href="#shield">KevinShield</a><a class="primary" href="#join">Enter Center</a>
       </div>
     </nav>
 
     <header class="hero">
       <div>
-        <div class="eyebrow"><span class="pulse"></span> Global collector platform concept</div>
-        <h1>The command center for <span class="gradient-text">Pokémon collectors.</span></h1>
-        <p class="hero-copy">
-          Created by Kevin Li from Boston, MA, KevinsPokeCenter combines a premium marketplace, collector vault, live auction arena, fair-trade engine, and AI collector assistant into one world-class destination for fans around the globe.
-        </p>
-        <div class="cta-row">
-          <a class="button" href="#platform">Launch the Platform Demo</a>
-          <a class="button secondary" href="#founder">Meet Kevin Li</a>
-        </div>
+        <div class="eyebrow"><span class="pulse"></span> Live global collector marketplace</div>
+        <h1>The premium command center for <span class="gradient-text">serious Pokémon collectors.</span></h1>
+        <p class="hero-copy">KevinsPokeCenter is operating as a luxury-grade collector marketplace with verified slabs, sealed vault products, live auctions, fair-trade rooms, holder profiles, and global collector intelligence in one polished destination.</p>
+        <div class="cta-row"><a class="button" href="#marketplace">Shop Live Marketplace</a><a class="button secondary" href="#pulse">View Market Pulse</a></div>
       </div>
 
-      <aside class="hero-card" aria-label="Founder portrait">
-        <div class="portrait-wrap">
-          <img src="/mnt/data/IMG_1643%202.jpg" alt="Kevin Li, creator of KevinsPokeCenter" />
-          <div class="floating-badge">
-            <div class="badge-title"><strong>Kevin Li</strong><span>Boston, MA</span></div>
-            <p>The innovator behind a collector economy where discovery, trust, market intelligence, and community feel as premium as the rarest grail card.</p>
+      <aside class="hero-dashboard" aria-label="Live marketplace dashboard">
+        <div class="dashboard-inner">
+          <div class="dash-top"><div class="dash-title"><strong>Global Marketplace Floor</strong><span>Verified listings, active holders, auction heat, and vault liquidity.</span></div><span class="live-pill"><span class="pulse"></span> Live now</span></div>
+          <div class="ticker">
+            <div class="ticker-card"><b id="liveUsers">18,742</b><span>Collectors online</span></div>
+            <div class="ticker-card"><b>$2.8M</b><span>24h marketplace volume</span></div>
+            <div class="ticker-card"><b>946</b><span>KevinShield sellers</span></div>
+            <div class="ticker-card"><b>128</b><span>Auctions ending today</span></div>
+          </div>
+          <div class="hero-market-grid">
+            <div class="hero-grail">
+              <span class="badge">🔥 Headline Grail</span>
+              <div class="emoji">🔥</div>
+              <h3>Shadowless Fire Dragon Holo PSA 10</h3>
+              <p>Premium slab, escrow-ready checkout, 42 active watchers, authenticated by KevinShield protocol.</p>
+              <div class="price-row"><div><span class="tiny">Current floor</span><b>$39,500</b></div><button class="button small" onclick="toast('Private grail room opened for Shadowless Fire Dragon Holo.')">Enter Grail Room</button></div>
+            </div>
+            <div class="side-stack">
+              <div class="mini-card"><span class="badge green">● Holder activity</span><h3>Top holders are moving.</h3><p>31 vault additions and 14 trade rooms opened in the last hour.</p><div class="avatar-strip"><div class="avatar">🐉</div><div class="avatar">⚡</div><div class="avatar">🌙</div><div class="avatar">💎</div><div class="avatar">🌊</div></div></div>
+              <div class="mini-card"><span class="badge blue">Market Pulse</span><h3>Vintage slabs +8.4%</h3><p>Demand is concentrated around PSA 10 holos, sealed booster boxes, and Japanese exclusive promos.</p></div>
+              <div class="mini-card"><span class="badge pink">Auction heat</span><h3>17 bids in 9 min</h3><p>Champion Arena is live with verified bidding and premium buyer protection.</p></div>
+            </div>
           </div>
         </div>
       </aside>
     </header>
 
-    <section class="stats" aria-label="Platform highlights">
-      <div class="stat"><b>5</b><span>Interactive product pillars live on this page</span></div>
-      <div class="stat"><b>24/7</b><span>Marketplace, vault, and auction energy</span></div>
-      <div class="stat"><b>∞</b><span>Built for collectors everywhere</span></div>
-      <div class="stat"><b>AI</b><span>Collector assistant experience included</span></div>
+    <section class="stat-band" aria-label="Platform live stats">
+      <div class="stat"><b>$84.7M</b><span>Total listed collector value</span></div>
+      <div class="stat"><b>52,918</b><span>Verified listings live</span></div>
+      <div class="stat"><b>9,604</b><span>Holder profiles active</span></div>
+      <div class="stat"><b>4.98★</b><span>Average seller reputation</span></div>
+      <div class="stat"><b>24/7</b><span>Auctions, trades, vaults</span></div>
     </section>
 
-    <section id="platform">
+    <section id="marketplace">
       <div class="section-head">
-        <div class="section-kicker">Interactive platform demo</div>
-        <h2>Not a landing page anymore. A product universe.</h2>
-        <p>
-          This version adds usable product modules directly into the site: a searchable marketplace, live vault dashboard, trade fairness calculator, auction arena, and KevinAI collector assistant.
-        </p>
+        <div class="section-kicker">Premium operating marketplace</div>
+        <h2>A full collector economy, already in motion.</h2>
+        <p>Search live listings, filter by collector-grade attributes, follow holder activity, bid on arena auctions, and watch the marketplace respond like a premium trading floor for Pokémon collectors.</p>
       </div>
 
-      <div class="command-center">
-        <div class="panel app-tabs" aria-label="Platform modules">
-          <button class="tab-btn active" data-tab="market"><strong>Marketplace</strong><span>Search premium listings, filter grails, and watch collector inventory come alive.</span></button>
-          <button class="tab-btn" data-tab="vault"><strong>Collector Vault</strong><span>Track collection value, set strength, and your highest-impact categories.</span></button>
-          <button class="tab-btn" data-tab="trade"><strong>Fair Trade Room</strong><span>Compare both sides of a trade and instantly see if the deal is balanced.</span></button>
-          <button class="tab-btn" data-tab="arena"><strong>Live Auction Arena</strong><span>Countdowns, bids, live energy, and premium drop storytelling.</span></button>
-          <button class="tab-btn" data-tab="ai"><strong>KevinAI Assistant</strong><span>Ask collector strategy questions and get market-style guidance instantly.</span></button>
+      <div class="market-shell">
+        <aside class="panel filters">
+          <div class="rail-title"><h3>Collector Filters</h3><span class="badge blue" id="resultCount">0 live</span></div>
+          <div class="filter-grid">
+            <div><label for="searchInput">Search inventory</label><input id="searchInput" placeholder="Charizard, Pikachu, sealed, PSA 10..." /></div>
+            <div><label for="categoryFilter">Category</label><select id="categoryFilter"><option value="all">All categories</option><option>Trending Grails</option><option>Live Auctions</option><option>Verified Slabs</option><option>Sealed Product Vault</option><option>New Listings</option><option>Recently Sold</option><option>Japanese Exclusives</option><option>Promos</option></select></div>
+            <div><label for="pokemonFilter">Pokémon</label><select id="pokemonFilter"><option value="all">All Pokémon</option><option>Charizard</option><option>Pikachu</option><option>Mewtwo</option><option>Lugia</option><option>Rayquaza</option><option>Umbreon</option><option>Blastoise</option><option>Venusaur</option><option>Gengar</option><option>Eevee</option></select></div>
+            <div><label for="eraFilter">Era</label><select id="eraFilter"><option value="all">All eras</option><option>Vintage</option><option>Modern</option><option>Japanese</option><option>Promo</option><option>Sealed</option></select></div>
+            <div><label for="gradeFilter">Grade / Format</label><select id="gradeFilter"><option value="all">All formats</option><option>PSA 10</option><option>PSA 9</option><option>BGS 10</option><option>CGC 9.5</option><option>Raw NM</option><option>Sealed</option></select></div>
+            <div><label for="languageFilter">Language</label><select id="languageFilter"><option value="all">All languages</option><option>English</option><option>Japanese</option><option>Global</option></select></div>
+            <div><label for="sellerFilter">Seller rating</label><select id="sellerFilter"><option value="all">All sellers</option><option value="5">5.0 stars</option><option value="4.9">4.9+ stars</option><option value="4.8">4.8+ stars</option></select></div>
+            <div><label>Price range</label><div class="range-row"><input id="minPrice" type="number" min="0" placeholder="Min" /><input id="maxPrice" type="number" min="0" placeholder="Max" /></div></div>
+          </div>
+          <div class="quick-tabs" id="quickTabs"><button class="quick-tab active" data-cat="all">All</button><button class="quick-tab" data-cat="Trending Grails">Trending</button><button class="quick-tab" data-cat="Live Auctions">Auctions</button><button class="quick-tab" data-cat="Verified Slabs">Slabs</button><button class="quick-tab" data-cat="Sealed Product Vault">Sealed</button><button class="quick-tab" data-cat="Recently Sold">Sold</button></div>
+        </aside>
+
+        <div class="market-main">
+          <div class="toolbar">
+            <input id="heroSearch" placeholder="Search all KevinsPokeCenter inventory..." />
+            <select id="sortSelect"><option value="trending">Sort: Trending</option><option value="priceHigh">Price high to low</option><option value="priceLow">Price low to high</option><option value="newest">Newest listed</option><option value="ending">Auction ending soon</option><option value="sold">Recently sold</option></select>
+            <select id="statusFilter"><option value="all">All status</option><option value="Verified">Verified</option><option value="Auction">Auction</option><option value="Sold">Sold</option><option value="Vault">Vault</option></select>
+          </div>
+
+          <div class="panel featured">
+            <div class="featured-main" id="featuredMain"></div>
+            <div class="featured-side" id="featuredSide"></div>
+          </div>
+
+          <div class="listing-grid" id="listingGrid"></div>
         </div>
 
-        <div class="panel demo-screen" id="demoScreen"></div>
+        <aside class="right-rail">
+          <div class="panel">
+            <div class="rail-title"><h3>Global Collector Feed</h3><span class="badge green">Live</span></div>
+            <div class="rail-list" id="activityFeed"></div>
+          </div>
+          <div class="panel" id="holders">
+            <div class="rail-title"><h3>Top Holders</h3><span class="badge purple">Online</span></div>
+            <div class="rail-list" id="holderList"></div>
+          </div>
+          <div class="panel">
+            <div class="rail-title"><h3>Trade Rooms</h3><span class="badge blue">Open</span></div>
+            <div class="rail-list" id="tradeRooms"></div>
+          </div>
+        </aside>
       </div>
     </section>
 
-    <section id="market">
-      <div class="section-head">
-        <div class="section-kicker">Why it feels world class</div>
-        <h2>Every feature creates trust, status, or momentum.</h2>
-        <p>
-          The platform is designed around what collectors actually love: finding grails, proving trust, showing status, tracking value, trading fairly, and feeling like every major action is legendary.
-        </p>
-      </div>
-
-      <div class="feature-grid">
-        <article class="feature-card"><div class="icon">⚡</div><h3>Electric Discovery</h3><p>Premium search, curated cards, grail drops, and collector storytelling make browsing feel like entering a flagship store.</p></article>
-        <article class="feature-card"><div class="icon">🛡️</div><h3>KevinShield Trust</h3><p>Verified-style listing language, condition clarity, reputation, and marketplace guardrails give buyers confidence.</p></article>
-        <article class="feature-card"><div class="icon">📈</div><h3>Market Pulse</h3><p>Vault analytics and price-style dashboards transform collecting into a smarter, more strategic experience.</p></article>
-        <article class="feature-card"><div class="icon">🤝</div><h3>Fair Trade Meter</h3><p>The trade calculator makes dealmaking feel transparent, fun, and safe for global collectors.</p></article>
-        <article class="feature-card"><div class="icon">🎙️</div><h3>Live Arena</h3><p>Auctions, countdowns, and event-style drops turn the marketplace into entertainment.</p></article>
-        <article class="feature-card"><div class="icon">🤖</div><h3>KevinAI</h3><p>An assistant that explains listings, trade strategy, vault priorities, and collecting moves in a premium voice.</p></article>
+    <section id="pulse">
+      <div class="section-head"><div class="section-kicker">Market Pulse</div><h2>Collector-grade intelligence for every move.</h2><p>KevinsPokeCenter turns collecting into a live market experience with category momentum, recent sales, vault concentration, and trust signals across the entire marketplace.</p></div>
+      <div class="market-pulse">
+        <div class="panel"><div class="rail-title"><h3>Category Momentum</h3><span class="badge green">30-day move</span></div><div class="bar-chart"><div class="bar-row"><span>Vintage Holos</span><div class="bar"><span style="--w:92%"></span></div><strong>+12.4%</strong></div><div class="bar-row"><span>Sealed Boxes</span><div class="bar"><span style="--w:78%"></span></div><strong>+8.8%</strong></div><div class="bar-row"><span>PSA 10 Slabs</span><div class="bar"><span style="--w:86%"></span></div><strong>+10.1%</strong></div><div class="bar-row"><span>Japanese Promos</span><div class="bar"><span style="--w:69%"></span></div><strong>+6.3%</strong></div><div class="bar-row"><span>Modern Alts</span><div class="bar"><span style="--w:58%"></span></div><strong>+3.9%</strong></div></div></div>
+        <div class="panel"><div class="rail-title"><h3>Featured Sellers</h3><span class="badge">KevinShield</span></div><div class="rail-list" id="sellerList"></div></div>
       </div>
     </section>
 
-    <section id="founder" class="founder">
-      <div class="panel">
-        <div class="section-kicker">The innovator</div>
-        <p class="quote">Kevin Li is building the collector platform Pokémon fans always imagined but never had.</p>
-        <p class="signature">From Boston, MA, Kevin brings a founder’s eye for product, culture, trust, and design. KevinsPokeCenter is his statement: the collecting experience should feel as exciting as the cards themselves.</p>
-      </div>
-      <div class="panel timeline">
-        <div class="timeline-item"><h4>Culture First</h4><p>Pokémon collecting is nostalgia, identity, friendship, competition, and community — not just inventory.</p></div>
-        <div class="timeline-item"><h4>Product Obsessed</h4><p>Every interaction is imagined like a premium product launch: cinematic, intuitive, and worthy of collector passion.</p></div>
-        <div class="timeline-item"><h4>Marketplace Native</h4><p>The platform vision pairs discovery with trust, so collectors can move faster without losing confidence.</p></div>
-        <div class="timeline-item"><h4>Built to Scale</h4><p>KevinsPokeCenter is a concept for the global collector economy: social, premium, transparent, and always evolving.</p></div>
+    <section>
+      <div class="section-head"><div class="section-kicker">Recently Sold</div><h2>Proof of a living market.</h2><p>High-value transactions, vault movements, and auction closings make the floor feel active, liquid, and trusted.</p></div>
+      <div class="sold-grid" id="soldGrid"></div>
+    </section>
+
+    <section id="shield">
+      <div class="section-head"><div class="section-kicker">World-class product sections</div><h2>Every surface creates trust, status, or momentum.</h2></div>
+      <div class="sections-grid">
+        <article class="feature-card"><div class="icon">🔥</div><h3>Trending Grails</h3><p>Expensive, watched, and culturally iconic cards rise to the front with live demand signals.</p></article>
+        <article class="feature-card"><div class="icon">🎙️</div><h3>Live Auctions</h3><p>Event-style bidding rooms with countdowns, watchlists, verified bidders, and cinematic urgency.</p></article>
+        <article class="feature-card"><div class="icon">🛡️</div><h3>KevinShield Verified</h3><p>Seller reputation, condition clarity, trusted checkout language, and premium buyer confidence.</p></article>
+        <article class="feature-card"><div class="icon">💎</div><h3>Sealed Vault</h3><p>Booster boxes, elite trainer boxes, display cases, and sealed inventory treated like investment-grade assets.</p></article>
+        <article class="feature-card"><div class="icon">⚡</div><h3>Watchlist Activity</h3><p>Collectors can see where attention is building before the next grail moves.</p></article>
+        <article class="feature-card"><div class="icon">🤝</div><h3>Trade Rooms</h3><p>Balanced dealmaking spaces for fair-value swaps, counteroffers, and premium collector negotiation.</p></article>
+        <article class="feature-card"><div class="icon">🌐</div><h3>Global Feed</h3><p>Purchases, listings, bids, vault drops, and holder status updates make the platform feel alive.</p></article>
+        <article class="feature-card"><div class="icon">👑</div><h3>Holder Profiles</h3><p>Pokémon-inspired collector avatars, reputation, vault stats, and active status create a populated world.</p></article>
       </div>
     </section>
 
-    <section id="join">
-      <div class="final-cta">
-        <div class="section-kicker">Enter the Center</div>
-        <h2>The future of Pokémon collecting has a new home.</h2>
-        <p>KevinsPokeCenter is built for the trainer hunting their first favorite card, the serious collector chasing a grail, and the marketplace power user who knows the next legendary find is always one drop away.</p>
-        <div class="cta-row" style="justify-content:center;">
-          <button class="button" onclick="toast('Early access request captured — Champion status pending.')">Request Early Access</button>
-          <a class="button secondary" href="#platform">Try the Demo</a>
-        </div>
-      </div>
+    <section class="founder">
+      <div class="panel"><div class="section-kicker">Built from Boston</div><p class="quote">Kevin Li’s collector floor now feels launched, liquid, trusted, and alive.</p><p class="signature">KevinsPokeCenter blends marketplace trust, live entertainment, portfolio-style intelligence, and collector identity into one premium destination. It is no longer a demo. It feels like the headquarters serious collectors open every day.</p></div>
+      <div class="panel"><div class="section-kicker">Operating standard</div><h2 style="font-size:clamp(2rem,3.4vw,4rem);">Premium by default.</h2><p>Every listing carries context. Every seller carries reputation. Every holder has a presence. Every auction creates momentum. Every interaction feels worthy of high-value cards.</p><div class="cta-row"><button class="button" onclick="toast('KevinShield seller onboarding started. Verification queue opened.')">Become Verified Seller</button><button class="button secondary" onclick="toast('Vault import initialized. Collector portfolio sync pending.')">Import Vault</button></div></div>
     </section>
 
-    <footer>
-      © 2026 KevinsPokeCenter. Fan-made marketplace concept. Pokémon is a trademark of its respective owner; this page is an independent creative concept.
-    </footer>
+    <section id="join"><div class="final-cta"><div class="section-kicker">Enter the Center</div><h2>The #1 global command center for Pokémon collectors.</h2><p>From first grails to six-figure slabs, KevinsPokeCenter gives collectors a premium, trusted, cinematic marketplace built for discovery, status, trading, auctions, and vault intelligence.</p><div class="cta-row" style="justify-content:center;"><button class="button" onclick="toast('Early access captured — Champion collector status pending.')">Request Collector Access</button><a class="button secondary" href="#marketplace">Explore Marketplace</a></div></div></section>
+
+    <footer>© 2026 KevinsPokeCenter. Fan-made collector marketplace experience. Pokémon is a trademark of its respective owner; this independent creative site is not affiliated with or endorsed by the trademark owner.</footer>
   </main>
 
   <script>
     const listings = [
-      { icon: '🔥', name: 'Charizard Grail Slab', type: 'PSA 10 · Fire Icon', price: 1240, tag: 'Verified' },
-      { icon: '🌙', name: 'Moonlit Evolution Chase', type: 'Alt Art · Modern Grail', price: 890, tag: 'Trending' },
-      { icon: '⚡', name: 'Electric Vintage Holo', type: 'Near Mint · Classic', price: 420, tag: 'Hot' },
-      { icon: '💎', name: 'Sealed Collector Box', type: 'Factory Sealed · Display', price: 310, tag: 'Vault' },
-      { icon: '🌊', name: 'First Partner Water Gem', type: 'CGC 9.5 · Rare Holo', price: 265, tag: 'New' },
-      { icon: '🌌', name: 'Psychic Galaxy Full Art', type: 'Japanese · Showcase', price: 180, tag: 'Global' }
+      {id:1, emoji:'🔥', name:'Shadowless Fire Dragon Holo', pokemon:'Charizard', set:'Base Era', era:'Vintage', grade:'PSA 10', language:'English', category:'Trending Grails', status:'Verified', condition:'Gem Mint', seller:'DragonVault', avatar:'🐉', rating:5.0, price:39500, bids:42, watchers:318, shipping:'Escrow insured', rarity:'Iconic Grail', recent:'7 bids in 12 min', trending:99, newest:1, ending:28},
+      {id:2, emoji:'⚡', name:'Illustrator Electric Mouse Promo', pokemon:'Pikachu', set:'Japanese Promo', era:'Promo', grade:'BGS 10', language:'Japanese', category:'Promos', status:'Verified', condition:'Pristine', seller:'TokyoGrailHouse', avatar:'⚡', rating:5.0, price:88000, bids:19, watchers:504, shipping:'White-glove', rarity:'Museum Tier', recent:'Private offer opened', trending:100, newest:2, ending:120},
+      {id:3, emoji:'🌙', name:'Moonlit Evolution Alt Art', pokemon:'Umbreon', set:'Evolving Skies', era:'Modern', grade:'PSA 10', language:'English', category:'Trending Grails', status:'Auction', condition:'Gem Mint', seller:'LunarSlabs', avatar:'🌙', rating:4.9, price:2120, bids:31, watchers:220, shipping:'Insured 2-day', rarity:'Modern Grail', recent:'Auction ending soon', trending:97, newest:5, ending:8},
+      {id:4, emoji:'🌊', name:'First Partner Water Holo', pokemon:'Blastoise', set:'Base Era', era:'Vintage', grade:'PSA 9', language:'English', category:'Verified Slabs', status:'Verified', condition:'Mint', seller:'KantoCapital', avatar:'🌊', rating:4.9, price:4600, bids:8, watchers:147, shipping:'Vault packed', rarity:'Vintage Holo', recent:'12 watchers today', trending:88, newest:7, ending:300},
+      {id:5, emoji:'🌿', name:'First Partner Leaf Holo', pokemon:'Venusaur', set:'Base Era', era:'Vintage', grade:'PSA 9', language:'English', category:'Verified Slabs', status:'Verified', condition:'Mint', seller:'OakArchive', avatar:'🌿', rating:4.8, price:3900, bids:6, watchers:121, shipping:'Insured', rarity:'Vintage Holo', recent:'Vault added twice', trending:83, newest:6, ending:260},
+      {id:6, emoji:'🐉', name:'Sky Dragon Gold Star', pokemon:'Rayquaza', set:'EX Deoxys', era:'Vintage', grade:'PSA 10', language:'English', category:'Live Auctions', status:'Auction', condition:'Gem Mint', seller:'EmeraldArena', avatar:'🐉', rating:5.0, price:31000, bids:58, watchers:611, shipping:'Escrow insured', rarity:'Gold Star', recent:'17 bids in 9 min', trending:98, newest:3, ending:4},
+      {id:7, emoji:'🪽', name:'Silver Wing Neo Holo', pokemon:'Lugia', set:'Neo Genesis', era:'Vintage', grade:'PSA 10', language:'English', category:'Trending Grails', status:'Verified', condition:'Gem Mint', seller:'NeoVault', avatar:'🪽', rating:5.0, price:18500, bids:17, watchers:276, shipping:'White-glove', rarity:'Neo Grail', recent:'Floor up 8.4%', trending:94, newest:8, ending:380},
+      {id:8, emoji:'🧠', name:'Psychic Legend First Edition', pokemon:'Mewtwo', set:'Base Era', era:'Vintage', grade:'CGC 9.5', language:'English', category:'Verified Slabs', status:'Verified', condition:'Gem Mint', seller:'CeruleanTrust', avatar:'🧠', rating:4.9, price:6200, bids:9, watchers:132, shipping:'Vault packed', rarity:'1st Edition', recent:'New verified listing', trending:81, newest:4, ending:240},
+      {id:9, emoji:'💎', name:'Evolving Skies Booster Box Case', pokemon:'Eevee', set:'Evolving Skies', era:'Sealed', grade:'Sealed', language:'English', category:'Sealed Product Vault', status:'Vault', condition:'Factory Sealed', seller:'SealedSupplyCo', avatar:'💎', rating:4.9, price:8600, bids:0, watchers:194, shipping:'Case protected', rarity:'Sealed Case', recent:'Vault demand rising', trending:92, newest:9, ending:410},
+      {id:10, emoji:'📦', name:'Japanese 151 Booster Box Master Lot', pokemon:'Pikachu', set:'151', era:'Japanese', grade:'Sealed', language:'Japanese', category:'Japanese Exclusives', status:'Vault', condition:'Factory Sealed', seller:'OsakaPokeDesk', avatar:'🎌', rating:4.8, price:980, bids:3, watchers:89, shipping:'Global insured', rarity:'JP Sealed', recent:'6 sold today', trending:86, newest:10, ending:500},
+      {id:11, emoji:'👻', name:'Shadow Phantom Masaki Promo', pokemon:'Gengar', set:'Masaki Promo', era:'Promo', grade:'PSA 10', language:'Japanese', category:'Promos', status:'Verified', condition:'Gem Mint', seller:'HaunterHoldings', avatar:'👻', rating:5.0, price:15200, bids:12, watchers:264, shipping:'White-glove', rarity:'Japanese Promo', recent:'Collector room opened', trending:91, newest:11, ending:200},
+      {id:12, emoji:'✨', name:'Shining Destiny Vault Slab', pokemon:'Charizard', set:'Shining Fates', era:'Modern', grade:'PSA 10', language:'English', category:'New Listings', status:'Verified', condition:'Gem Mint', seller:'ModernMint', avatar:'✨', rating:4.8, price:740, bids:2, watchers:45, shipping:'2-day insured', rarity:'Modern Chase', recent:'Listed 4 min ago', trending:72, newest:18, ending:600},
+      {id:13, emoji:'🏆', name:'Champion Trophy Trainer Card', pokemon:'Pikachu', set:'Trophy Promo', era:'Promo', grade:'PSA 9', language:'Japanese', category:'Trending Grails', status:'Verified', condition:'Mint', seller:'TrophyDesk', avatar:'🏆', rating:5.0, price:54000, bids:7, watchers:401, shipping:'Concierge', rarity:'Trophy Card', recent:'Private bid received', trending:96, newest:12, ending:180},
+      {id:14, emoji:'🧊', name:'Crystal Guardian Holo', pokemon:'Charizard', set:'Skyridge', era:'Vintage', grade:'PSA 10', language:'English', category:'Live Auctions', status:'Auction', condition:'Gem Mint', seller:'CrystalCabinet', avatar:'🧊', rating:4.9, price:27200, bids:44, watchers:386, shipping:'Escrow insured', rarity:'Crystal Holo', recent:'Auction war active', trending:95, newest:13, ending:15},
+      {id:15, emoji:'🪙', name:'Gold Metal Premium Collection', pokemon:'Pikachu', set:'Celebrations', era:'Modern', grade:'Sealed', language:'English', category:'Sealed Product Vault', status:'Vault', condition:'Factory Sealed', seller:'CelebrationSafe', avatar:'🪙', rating:4.7, price:420, bids:0, watchers:33, shipping:'Insured', rarity:'Premium Box', recent:'Watchlist spike', trending:61, newest:14, ending:620},
+      {id:16, emoji:'🦊', name:'Full Evolution Master Set', pokemon:'Eevee', set:'Eeveelution Vault', era:'Modern', grade:'Raw NM', language:'English', category:'New Listings', status:'Verified', condition:'Near Mint', seller:'EeveeEstate', avatar:'🦊', rating:4.8, price:1680, bids:5, watchers:118, shipping:'Binder protected', rarity:'Master Set', recent:'Trade offers open', trending:79, newest:16, ending:420},
+      {id:17, emoji:'✅', name:'Recently Sold Fire Holo PSA 9', pokemon:'Charizard', set:'Base Era', era:'Vintage', grade:'PSA 9', language:'English', category:'Recently Sold', status:'Sold', condition:'Mint', seller:'RedVersionVault', avatar:'🔥', rating:4.9, price:7850, bids:22, watchers:177, shipping:'Delivered to vault', rarity:'Sold Comp', recent:'Sold 18 min ago', trending:87, newest:15, ending:999},
+      {id:18, emoji:'🎌', name:'Japanese Moon Cat SAR', pokemon:'Umbreon', set:'Terastal Festival', era:'Japanese', grade:'Raw NM', language:'Japanese', category:'Japanese Exclusives', status:'Verified', condition:'Near Mint', seller:'KyotoCards', avatar:'🌙', rating:4.8, price:560, bids:4, watchers:82, shipping:'Global insured', rarity:'JP SAR', recent:'Listed 11 min ago', trending:76, newest:17, ending:530}
     ];
 
-    const screen = document.getElementById('demoScreen');
-    const tabButtons = document.querySelectorAll('.tab-btn');
-    let bid = 680;
-    let seconds = 143;
+    const holders = [
+      {avatar:'🐉', name:'DragonVault', meta:'5.0 ★ · $1.2M vault · online'}, {avatar:'⚡', name:'TokyoGrailHouse', meta:'5.0 ★ · 94 trophy cards · online'}, {avatar:'🌙', name:'LunarSlabs', meta:'4.9 ★ · modern alt specialist'}, {avatar:'💎', name:'SealedSupplyCo', meta:'4.9 ★ · sealed case desk'}, {avatar:'👻', name:'HaunterHoldings', meta:'5.0 ★ · Japanese promo holder'}
+    ];
+    const activities = [
+      ['🔥','RedVersionVault sold a Fire Holo PSA 9','$7,850 · 18m'], ['🐉','EmeraldArena received a new arena bid','+$500 · 4m'], ['🌙','LunarSlabs added Moonlit Evolution to vault','PSA 10 · 8m'], ['⚡','TokyoGrailHouse opened a private offer','Illustrator Promo · 12m'], ['💎','SealedSupplyCo listed a sealed case','Evolving Skies · 16m'], ['👻','HaunterHoldings entered a trade room','Masaki Promo · 21m'], ['🌊','KantoCapital gained 12 watchers','Water Holo · 25m']
+    ];
+    const trades = [
+      ['🤝','Moonlit Alt for Gold Star','Fairness 94/100'], ['⚖️','Vintage holo bundle swap','Counteroffer live'], ['💬','Sealed case negotiation','3 holders inside'], ['🛡️','KevinShield escrow trade','Shipping verified']
+    ];
 
-    function money(n) {
-      return '$' + Number(n).toLocaleString();
+    const els = {
+      searchInput: document.getElementById('searchInput'), heroSearch: document.getElementById('heroSearch'), categoryFilter: document.getElementById('categoryFilter'), pokemonFilter: document.getElementById('pokemonFilter'), eraFilter: document.getElementById('eraFilter'), gradeFilter: document.getElementById('gradeFilter'), languageFilter: document.getElementById('languageFilter'), sellerFilter: document.getElementById('sellerFilter'), minPrice: document.getElementById('minPrice'), maxPrice: document.getElementById('maxPrice'), sortSelect: document.getElementById('sortSelect'), statusFilter: document.getElementById('statusFilter'), grid: document.getElementById('listingGrid'), resultCount: document.getElementById('resultCount')
+    };
+
+    function money(n) { return '$' + Number(n).toLocaleString(); }
+    function toast(message) { const el = document.getElementById('toast'); el.textContent = message; el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 2600); }
+    function escapeHTML(str) { return String(str).replace(/[&<>'"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c])); }
+
+    function listingCard(item) {
+      const action = item.status === 'Sold' ? `<button class="watch" onclick="toast('Sold comp saved to your Market Pulse.')">Save Comp</button>` : item.status === 'Auction' ? `<button class="bid-btn" onclick="placeBid(${item.id})">Bid +$25</button>` : `<button class="bid-btn" onclick="toast('${escapeHTML(item.name)} added to secure checkout review.')">Buy / Offer</button>`;
+      return `<article class="listing-card">
+        <div class="card-art">${item.emoji}</div>
+        <div class="listing-head"><div><h4>${item.name}</h4><p>${item.set} · ${item.condition} · ${item.language}</p></div><span class="badge ${item.status === 'Auction' ? 'pink' : item.status === 'Sold' ? 'green' : 'blue'}">${item.status}</span></div>
+        <div class="seller-row"><div class="seller"><div class="avatar">${item.avatar}</div><span>${item.seller} · ${item.rating.toFixed(1)}★</span></div><span class="tiny">${item.shipping}</span></div>
+        <div class="metric-row"><span class="price">${money(item.price)}</span><span class="tiny">${item.bids} bids · <span id="watch-${item.id}">${item.watchers}</span> watching</span></div>
+        <p>${item.rarity} · ${item.recent}</p>
+        <div class="card-actions"><button class="watch" onclick="watchItem(${item.id})">♡ Watch</button>${action}</div>
+      </article>`;
     }
 
-    function toast(message) {
-      const el = document.getElementById('toast');
-      el.textContent = message;
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 2300);
+    function passes(item) {
+      const q = ((els.searchInput.value || '') + ' ' + (els.heroSearch.value || '')).toLowerCase().trim();
+      const text = [item.name,item.pokemon,item.set,item.era,item.grade,item.language,item.category,item.status,item.seller,item.rarity].join(' ').toLowerCase();
+      const min = Number(els.minPrice.value || 0), max = Number(els.maxPrice.value || Infinity);
+      return (!q || text.includes(q))
+        && (els.categoryFilter.value === 'all' || item.category === els.categoryFilter.value)
+        && (els.pokemonFilter.value === 'all' || item.pokemon === els.pokemonFilter.value)
+        && (els.eraFilter.value === 'all' || item.era === els.eraFilter.value)
+        && (els.gradeFilter.value === 'all' || item.grade === els.gradeFilter.value)
+        && (els.languageFilter.value === 'all' || item.language === els.languageFilter.value)
+        && (els.statusFilter.value === 'all' || item.status === els.statusFilter.value)
+        && (els.sellerFilter.value === 'all' || item.rating >= Number(els.sellerFilter.value))
+        && item.price >= min && item.price <= max;
     }
 
-    function renderMarket() {
-      screen.innerHTML = `
-        <div class="screen-top">
-          <div class="screen-title"><h3>Premium Marketplace</h3><p>Search live collector inventory.</p></div>
-          <span class="chip">● Live listings</span>
-        </div>
-        <div class="market-toolbar">
-          <input id="searchInput" placeholder="Search Charizard, sealed, slab, vintage..." />
-          <select id="filterSelect"><option value="all">All drops</option><option value="Verified">Verified</option><option value="Trending">Trending</option><option value="Vault">Vault</option><option value="Global">Global</option></select>
-        </div>
-        <div class="card-grid" id="listingGrid"></div>
-      `;
-      const input = document.getElementById('searchInput');
-      const filter = document.getElementById('filterSelect');
-      const grid = document.getElementById('listingGrid');
-      function draw() {
-        const q = input.value.toLowerCase();
-        const f = filter.value;
-        const filtered = listings.filter(item => {
-          const text = (item.name + ' ' + item.type + ' ' + item.tag).toLowerCase();
-          return text.includes(q) && (f === 'all' || item.tag === f);
-        });
-        grid.innerHTML = filtered.map(item => `
-          <article class="collectible">
-            <div class="card-art">${item.icon}</div>
-            <h4>${item.name}</h4>
-            <p>${item.type}</p>
-            <div class="card-meta"><span>${money(item.price)}</span><span class="tag">${item.tag}</span></div>
-          </article>
-        `).join('') || '<p style="color:var(--muted);">No grails found. Try another search.</p>';
-      }
-      input.addEventListener('input', draw);
-      filter.addEventListener('change', draw);
-      draw();
-    }
-
-    function renderVault() {
-      screen.innerHTML = `
-        <div class="screen-top">
-          <div class="screen-title"><h3>Collector Vault</h3><p>Your collection, tracked like a premium portfolio.</p></div>
-          <span class="chip">● Value synced</span>
-        </div>
-        <div class="vault-grid">
-          <div class="vault-stat"><b>$18.4K</b><span>Estimated vault value</span></div>
-          <div class="vault-stat"><b>247</b><span>Cards tracked</span></div>
-          <div class="vault-stat"><b>+12.8%</b><span>30-day momentum</span></div>
-        </div>
-        <div class="bar-chart">
-          <div class="bar-row"><span>Slabs</span><div class="bar"><span style="--w:82%"></span></div><strong>$9.1K</strong></div>
-          <div class="bar-row"><span>Sealed</span><div class="bar"><span style="--w:68%"></span></div><strong>$5.2K</strong></div>
-          <div class="bar-row"><span>Singles</span><div class="bar"><span style="--w:51%"></span></div><strong>$2.7K</strong></div>
-          <div class="bar-row"><span>Japanese</span><div class="bar"><span style="--w:37%"></span></div><strong>$1.4K</strong></div>
-        </div>
-        <div class="panel" style="box-shadow:none;margin-top:22px;padding:22px;">
-          <div class="section-kicker">Vault insight</div>
-          <p style="margin-bottom:0;">Your strongest category is graded slabs. KevinAI recommends adding sealed product exposure to balance long-term collection growth.</p>
-        </div>
-      `;
-    }
-
-    function renderTrade() {
-      screen.innerHTML = `
-        <div class="screen-top">
-          <div class="screen-title"><h3>Fair Trade Room</h3><p>Balance a trade before anyone ships.</p></div>
-          <span class="chip">● KevinShield ready</span>
-        </div>
-        <div class="trade-meter">
-          <div class="trade-values">
-            <div class="trade-box"><label>Your side value</label><input id="yourValue" type="number" value="420" min="0" /></div>
-            <div class="trade-box"><label>Their side value</label><input id="theirValue" type="number" value="395" min="0" /></div>
-          </div>
-          <div class="meter-track"><div class="meter-fill" id="meterFill"></div></div>
-          <p class="fair-text" id="fairText"></p>
-          <div class="cta-row"><button class="button small" onclick="toast('Trade room opened — KevinShield verification started.')">Start Verified Trade</button><button class="button small secondary" onclick="toast('Counteroffer generated with collector-grade language.')">Generate Counteroffer</button></div>
-        </div>
-      `;
-      const your = document.getElementById('yourValue');
-      const their = document.getElementById('theirValue');
-      const fill = document.getElementById('meterFill');
-      const text = document.getElementById('fairText');
-      function update() {
-        const a = Number(your.value || 0);
-        const b = Number(their.value || 0);
-        const diff = Math.abs(a - b);
-        const max = Math.max(a, b, 1);
-        const fairness = Math.max(0, 100 - (diff / max) * 100);
-        fill.style.width = Math.max(8, fairness) + '%';
-        const status = fairness > 92 ? 'Legendary fair' : fairness > 80 ? 'Strong trade' : fairness > 65 ? 'Needs balancing' : 'High imbalance';
-        text.innerHTML = `<strong>${status}</strong> — difference: ${money(diff)}. Fairness score: ${Math.round(fairness)}/100.`;
-      }
-      your.addEventListener('input', update);
-      their.addEventListener('input', update);
-      update();
-    }
-
-    function renderArena() {
-      screen.innerHTML = `
-        <div class="screen-top">
-          <div class="screen-title"><h3>Live Auction Arena</h3><p>Event-style drops with cinematic urgency.</p></div>
-          <span class="chip">● Arena live</span>
-        </div>
-        <div class="auction-card">
-          <div class="auction-hero">🔥</div>
-          <div class="auction-body">
-            <h4>Champion Fire Grail — Verified Slab</h4>
-            <p>Tonight’s headline auction: premium condition, collector-first presentation, KevinShield-style listing details.</p>
-            <div class="auction-row"><span>Current bid<br><b id="bidAmount">${money(bid)}</b></span><span>Time left<br><b id="timer">02:23</b></span></div>
-            <div class="cta-row"><button class="button" id="bidButton">Place +$25 Bid</button><button class="button secondary" onclick="toast('Watchlist alert armed for this grail.')">Watch Grail</button></div>
-          </div>
-        </div>
-      `;
-      document.getElementById('bidButton').addEventListener('click', () => {
-        bid += 25;
-        document.getElementById('bidAmount').textContent = money(bid);
-        toast('Bid placed — you are now leading the Arena.');
+    function sortItems(items) {
+      const s = els.sortSelect.value;
+      return [...items].sort((a,b) => {
+        if (s === 'priceHigh') return b.price - a.price;
+        if (s === 'priceLow') return a.price - b.price;
+        if (s === 'newest') return b.newest - a.newest;
+        if (s === 'ending') return a.ending - b.ending;
+        if (s === 'sold') return (b.status === 'Sold') - (a.status === 'Sold') || b.newest - a.newest;
+        return b.trending - a.trending;
       });
-      updateTimer();
     }
 
-    function updateTimer() {
-      const timer = document.getElementById('timer');
-      if (!timer) return;
-      const m = Math.floor(seconds / 60).toString().padStart(2, '0');
-      const s = (seconds % 60).toString().padStart(2, '0');
-      timer.textContent = `${m}:${s}`;
-    }
-    setInterval(() => { seconds = Math.max(0, seconds - 1); updateTimer(); }, 1000);
-
-    function renderAI() {
-      screen.innerHTML = `
-        <div class="screen-top">
-          <div class="screen-title"><h3>KevinAI Collector Assistant</h3><p>Strategy, pricing, and vault guidance in a premium voice.</p></div>
-          <span class="chip">● Assistant online</span>
-        </div>
-        <div class="ai-box">
-          <div class="chat-log" id="chatLog">
-            <div class="bubble bot">Ask me about trades, vault strategy, pricing, grail hunting, or how to make a listing feel premium.</div>
-          </div>
-          <div class="prompt-row">
-            <input id="aiInput" placeholder="Ask KevinAI: Is this trade fair? What should I collect next?" />
-            <button class="button" id="askButton">Ask</button>
-          </div>
-        </div>
-      `;
-      const log = document.getElementById('chatLog');
-      const input = document.getElementById('aiInput');
-      const ask = document.getElementById('askButton');
-      const responses = [
-        'I would prioritize verified slabs, sealed product diversification, and one emotionally meaningful grail. That creates both market strength and collector identity.',
-        'For a trade, compare recent sold values, condition, liquidity, and how hard each card is to replace. A fair trade is not only equal dollars — it is equal confidence.',
-        'To make this listing premium, lead with the card story, show crisp photos, disclose condition clearly, and include why collectors care about this specific item.',
-        'Your next move should be a focused mini-thesis: pick one Pokémon, one era, or one set and become unmistakably known for it.'
-      ];
-      function send() {
-        const q = input.value.trim();
-        if (!q) return;
-        log.innerHTML += `<div class="bubble user">${q.replace(/</g, '&lt;')}</div>`;
-        const answer = responses[Math.floor(Math.random() * responses.length)];
-        setTimeout(() => {
-          log.innerHTML += `<div class="bubble bot">${answer}</div>`;
-          log.scrollTop = log.scrollHeight;
-        }, 260);
-        input.value = '';
-        log.scrollTop = log.scrollHeight;
-      }
-      ask.addEventListener('click', send);
-      input.addEventListener('keydown', e => { if (e.key === 'Enter') send(); });
+    function renderListings() {
+      const filtered = sortItems(listings.filter(passes));
+      els.resultCount.textContent = `${filtered.length} live`;
+      els.grid.innerHTML = filtered.map(listingCard).join('') || `<div class="empty-state">No marketplace items match those filters. Clear a filter or search another grail.</div>`;
     }
 
-    const renderers = { market: renderMarket, vault: renderVault, trade: renderTrade, arena: renderArena, ai: renderAI };
-    tabButtons.forEach(btn => {
-      btn.addEventListener('click', () => {
-        tabButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        renderers[btn.dataset.tab]();
-      });
+    function renderFeatured(index = 0) {
+      const grails = listings.filter(x => x.category === 'Trending Grails' || x.category === 'Live Auctions').sort((a,b) => b.trending - a.trending).slice(0,4);
+      const main = grails[index % grails.length];
+      document.getElementById('featuredMain').innerHTML = `<span class="badge">Featured Grail Carousel</span><div class="emoji">${main.emoji}</div><h3>${main.name}</h3><p>${main.grade} · ${main.set} · ${main.condition} · ${main.watchers} collectors watching</p><div class="price-row"><div><span class="tiny">Marketplace price</span><b>${money(main.price)}</b></div><button class="button small" onclick="toast('${escapeHTML(main.name)} opened in premium grail view.')">View Grail</button></div>`;
+      document.getElementById('featuredSide').innerHTML = grails.map((g,i) => `<div class="grail-mini" onclick="renderFeatured(${i})"><div class="art">${g.emoji}</div><div><b>${g.name}</b><span class="tiny">${g.grade} · ${money(g.price)} · ${g.watchers} watching</span></div></div>`).join('');
+    }
+
+    function renderRails() {
+      document.getElementById('holderList').innerHTML = holders.map(h => `<div class="collector-row"><div class="avatar">${h.avatar}</div><div><b>${h.name}</b><span>${h.meta}</span></div><span class="badge green">●</span></div>`).join('');
+      document.getElementById('tradeRooms').innerHTML = trades.map(t => `<div class="trade-row"><div class="avatar">${t[0]}</div><div><b>${t[1]}</b><span>${t[2]}</span></div><span class="feed-time">Live</span></div>`).join('');
+      document.getElementById('sellerList').innerHTML = holders.slice(0,4).map(h => `<div class="seller-card"><div class="avatar">${h.avatar}</div><div><b>${h.name}</b><span>${h.meta}</span></div><span class="badge">Verified</span></div>`).join('');
+      document.getElementById('soldGrid').innerHTML = listings.filter(x => x.status === 'Sold' || x.category === 'Recently Sold' || x.price > 15000).slice(0,8).map(x => `<div class="sold-card"><div class="art">${x.emoji}</div><b>${x.name}</b><span>${x.status === 'Sold' ? 'Sold' : 'Last comp'} · ${money(x.price)}</span></div>`).join('');
+    }
+
+    let feedOffset = 0;
+    function renderFeed() {
+      const feed = [...activities.slice(feedOffset), ...activities.slice(0, feedOffset)].slice(0,5);
+      document.getElementById('activityFeed').innerHTML = feed.map(a => `<div class="feed-item"><div class="avatar">${a[0]}</div><div><b>${a[1]}</b><span>${a[2]}</span></div><span class="feed-time">now</span></div>`).join('');
+      feedOffset = (feedOffset + 1) % activities.length;
+    }
+
+    function watchItem(id) {
+      const item = listings.find(x => x.id === id); item.watchers += 1; renderListings(); toast(`${item.name} added to your watchlist. ${item.watchers} collectors watching.`);
+    }
+    function placeBid(id) {
+      const item = listings.find(x => x.id === id); item.price += 25; item.bids += 1; item.watchers += 1; item.trending += 1; renderListings(); renderFeatured(); toast(`Bid placed on ${item.name}. New arena price: ${money(item.price)}.`);
+    }
+
+    Object.values(els).forEach(el => { if (el && el.addEventListener) { el.addEventListener('input', renderListings); el.addEventListener('change', renderListings); } });
+    document.getElementById('quickTabs').addEventListener('click', e => {
+      const btn = e.target.closest('.quick-tab'); if (!btn) return;
+      document.querySelectorAll('.quick-tab').forEach(b => b.classList.remove('active')); btn.classList.add('active');
+      els.categoryFilter.value = btn.dataset.cat; renderListings();
     });
+    setInterval(() => { const el = document.getElementById('liveUsers'); el.textContent = (18742 + Math.floor(Math.random()*60)).toLocaleString(); }, 2500);
+    setInterval(renderFeed, 4200);
 
-    renderMarket();
+    renderFeatured(); renderRails(); renderFeed(); renderListings();
   </script>
 </body>
 </html>
